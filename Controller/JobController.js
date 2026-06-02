@@ -53,7 +53,10 @@ exports.homePageController = async (req,res) =>{
     console.log("iside homePagecontroller");
    
     try{
-        const allHomeProject = await jobs.find().limit(6)
+        const allHomeProject = await jobs.find()
+            .populate({ path: "company" })
+            .sort({ createdAt: -1 })
+            .limit(6)
         res.status(200).json(allHomeProject)
      
     }catch(err){
@@ -89,7 +92,10 @@ exports.getJobByIdController = async (req,res)=>{
     const jobId = req.params.id
 
     try {
-        const job = await jobs.findById(jobId)
+        const job = await jobs.findById(jobId).populate({ path: "company" })
+        if (!job) {
+            return res.status(404).json({ message: "Job not found" })
+        }
         res.status(200).json(job)
     } catch (err) {
         res.status(401).json(err)

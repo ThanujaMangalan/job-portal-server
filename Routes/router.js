@@ -3,6 +3,8 @@ const router = new express.Router()
 const userContoller = require('../Controller/userController')
 const companyContoller = require('../Controller/companyController')
 const jobController = require('../Controller/JobController')
+const applicationController = require('../Controller/applicationController')
+const savedJobController = require('../Controller/savedJobController')
 const jwtMiddleware = require('../Middlewares/jwtMiddleware')
 const multerMiddleware = require('../Middlewares/multerMiddleware')
 
@@ -20,11 +22,21 @@ router.delete('/company/:id/remove',jwtMiddleware,companyContoller.deleteCompany
 //jobs
 router.post('/jobs/addjob',jwtMiddleware,jobController.addJobController)
 router.get('/homeproject',jobController.homePageController)
-router.get('/jobs/getjob',jwtMiddleware,jobController.allJobController)
+router.get('/jobs/getjob',jobController.allJobController)
 router.get('/jobs/getadmin',jwtMiddleware,jobController.getAminJobController)
-router.get('/jobs/get/:id',jwtMiddleware,jobController.getJobByIdController)
+router.get('/jobs/get/:id',jobController.getJobByIdController)
 router.delete('/jobs/:id/remove',jwtMiddleware,jobController.deleteJobController)
 
+// applications
+router.post('/jobs/:id/apply', jwtMiddleware, applicationController.applyToJob)
+router.get('/applications/my', jwtMiddleware, applicationController.getMyApplications)
+router.get('/jobs/:id/application-status', jwtMiddleware, applicationController.checkApplicationStatus)
+router.get('/applications/recruiter', jwtMiddleware, applicationController.getRecruiterApplications)
+router.put('/applications/:id/status', jwtMiddleware, applicationController.updateApplicationStatus)
 
+// saved jobs
+router.post('/jobs/:id/save', jwtMiddleware, savedJobController.saveJob)
+router.get('/jobs/saved', jwtMiddleware, savedJobController.getSavedJobs)
+router.delete('/jobs/:id/save', jwtMiddleware, savedJobController.unsaveJob)
 
 module.exports =router
